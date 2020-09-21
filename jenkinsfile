@@ -1,4 +1,4 @@
-final GIT_REPO = ''
+final GIT_REPO = 'https://github.com/arulmuhilan/terraform-aws-ec2-instance.git'
 final GIT_CREDENTIALS_ID = ""
 
 pipeline {
