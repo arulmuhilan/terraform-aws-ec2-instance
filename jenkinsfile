@@ -2,44 +2,38 @@ final GIT_REPO = 'https://github.com/arulmuhilan/terraform-aws-ec2-instance.git'
 final GIT_CREDENTIALS_ID = "github-ssh"
 
 pipeline {
-   node {
+    agent {
+      node {
         label "master"
       } 
-     
+    }
+
     stages {
-      stage('checkout') {
-          steps {
-            
-			git credentialsId: GIT_CREDENTIALS_ID, url: GIT_REPO
-             
+      stage('fetch_latest_code') {
+        steps {
+          git credentialsId: 'github-ssh', url: 'https://github.com/arulmuhilan/terraform-aws-ec2-instance.git'
+        }
+      }
+
+      stage('TF Init&Plan') {
+        steps {
+          sh 'terraform init'
+          sh 'terraform plan'
+        }      
+      }
+
+      stage('Approval') {
+        steps {
+          script {
+            def userInput = input(id: 'confirm', message: 'Apply Terraform?', parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Apply terraform', name: 'Arultest'] ])
           }
         }
+      }
 
-  stage('Set Terraform path') {
-            steps {
-                script {
-                    def tfHome = tool name: 'Arultest-TF'
-                    //env.PATH = "${tfHome}:${env.PATH}"
-                }
-                sh 'terraform --version -no-color'
-            }
+      stage('TF Apply') {
+        steps {
+          sh 'terraform apply -input=false'
         }
-        
-         stage('Provision infrastructure') {
-             
-            steps {
-             {
-                //sh  'terraform destroy --auto-approve'
-                //sh  'terraform refresh'
-                sh  'terraform init'
-                sh  'terraform plan'
-                //sh 'terraform apply --auto-approve'
-              }
-             
-            }
-        }
-        
-      
-      
-    }
-}
+      }
+    } 
+  }
