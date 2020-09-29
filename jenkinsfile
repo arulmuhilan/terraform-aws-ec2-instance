@@ -2,7 +2,9 @@ final GIT_REPO = 'https://github.com/arulmuhilan/terraform-aws-ec2-instance.git'
 final GIT_CREDENTIALS_ID = "github-ssh"
 
 pipeline {
-    agent any
+   node {
+        label "master"
+      } 
      
     stages {
       stage('checkout') {
