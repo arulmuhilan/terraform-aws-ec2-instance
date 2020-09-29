@@ -28,7 +28,7 @@ pipeline {
          stage('Provision infrastructure') {
              
             steps {
-            ansiColor('xterm') {
+             {
                 //sh  'terraform destroy --auto-approve'
                 //sh  'terraform refresh'
                 sh  'terraform init'
